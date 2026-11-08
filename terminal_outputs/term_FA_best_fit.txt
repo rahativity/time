@@ -1,0 +1,23 @@
+rahat@nixos:~/Downloads/Os$ ./FA_best_fit
+Enter number of memory blocks: 5
+Enter size of block 1: 100
+Enter size of block 2: 500
+Enter size of block 3: 200
+Enter size of block 4: 300
+Enter size of block 5: 600
+
+Enter size needed (0 to exit): 212
+Allocated in block 4
+
+Enter size needed (0 to exit): 417
+Allocated in block 2
+
+Enter size needed (0 to exit): 112
+Allocated in block 3
+
+Enter size needed (0 to exit): 426
+Allocated in block 5
+
+Enter size needed (0 to exit): 0
+rahat@nixos:~/Downloads/Os$ 
+

@@ -1,0 +1,22 @@
+rahat@nixos:~/Downloads/Os$ ./PS_Roundrobin
+Enter the number of processes: 4
+Enter arrival time of process 1: 0
+Enter burst time of process 1: 5
+Enter arrival time of process 2: 1
+Enter burst time of process 2: 4
+Enter arrival time of process 3: 2
+Enter burst time of process 3: 2
+Enter arrival time of process 4: 3
+Enter burst time of process 4: 1
+Enter Time Quantum: 2
+
+Process Arrival Burst   Completion      Turnaround      Waiting
+1       0       5       12              12              7
+2       1       4       11              10              6
+3       2       2       6               4               2
+4       3       1       9               6               5
+
+Average Waiting Time: 5.00
+Average Turnaround Time: 8.00
+rahat@nixos:~/Downloads/Os$ 
+

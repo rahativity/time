@@ -1,0 +1,22 @@
+rahat@nixos:~/Downloads/Os$ ./PS_Shortest_remaining
+Enter the number of processes: 4
+Enter arrival time of process 1: 0
+Enter burst time of process 1: 5
+Enter arrival time of process 2: 1
+Enter burst time of process 2: 4
+Enter arrival time of process 3: 2
+Enter burst time of process 3: 2
+Enter arrival time of process 4: 3
+Enter burst time of process 4: 1
+Enter Time Quantum: 2
+
+Process Arrival Burst   Completion      Turnaround      Waiting
+1       0       5       8               8               3
+2       1       4       12              11              7
+3       2       2       4               2               0
+4       3       1       5               2               1
+
+Average Waiting Time: 2.75
+Average Turnaround Time: 5.75
+rahat@nixos:~/Downloads/Os$ 
+

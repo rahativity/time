@@ -1,0 +1,217 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=0.8in]{geometry}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{tcolorbox}
+\tcbuselibrary{skins,listings,breakable}
+\usepackage{hyperref}
+\usepackage{fancyhdr}
+\usepackage{booktabs}
+\usepackage{amsmath}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue!70!black,
+    urlcolor=blue!70!black,
+    citecolor=blue!70!black
+}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{14pt}
+\rhead{\texttt{rahat@nixos:~/Downloads/Os}}
+\lhead{OS Algorithms: Scheduling \& Memory Allocation}
+\cfoot{\thepage}
+
+\definecolor{codebg}{RGB}{252, 252, 254}
+\definecolor{codeframe}{RGB}{205, 215, 230}
+\definecolor{codeheader}{RGB}{236, 241, 250}
+
+\definecolor{termbg}{RGB}{255, 255, 255}
+\definecolor{termframe}{RGB}{205, 212, 224}
+\definecolor{termheader}{RGB}{240, 243, 248}
+\definecolor{termtitle}{RGB}{55, 65, 80}
+\definecolor{termtext}{RGB}{20, 24, 33}
+
+\definecolor{cppkeyword}{RGB}{0, 51, 179}
+\definecolor{cppcomment}{RGB}{108, 122, 137}
+\definecolor{cppstring}{RGB}{180, 80, 0}
+
+\lstdefinestyle{cppstyle}{
+    language=C++,
+    basicstyle=\ttfamily\scriptsize,
+    keywordstyle=\color{cppkeyword}\bfseries,
+    commentstyle=\color{cppcomment}\itshape,
+    stringstyle=\color{cppstring},
+    numberstyle=\tiny\color{gray},
+    numbers=left,
+    stepnumber=1,
+    numbersep=7pt,
+    tabsize=4,
+    showstringspaces=false,
+    breaklines=true,
+    breakatwhitespace=false,
+    columns=fullflexible
+}
+
+\lstdefinestyle{termstyle}{
+    basicstyle=\ttfamily\scriptsize\color{termtext},
+    backgroundcolor=\color{termbg},
+    breaklines=true,
+    showstringspaces=false,
+    columns=fullflexible,
+    keepspaces=true,
+    tabsize=8
+}
+
+\newtcolorbox{codebox}[1]{
+    enhanced,
+    breakable,
+    colback=codebg,
+    colframe=codeframe,
+    coltitle=black!85!white,
+    colbacktitle=codeheader,
+    fonttitle=\bfseries\small\ttfamily,
+    title={File: #1},
+    boxrule=0.8pt,
+    arc=2mm,
+    top=4pt,
+    bottom=4pt,
+    left=4pt,
+    right=4pt
+}
+
+\newtcolorbox{termbox}[1]{
+    enhanced,
+    colback=termbg,
+    colframe=termframe,
+    coltitle=termtitle,
+    colbacktitle=termheader,
+    fonttitle=\bfseries\small\ttfamily,
+    title={\textcolor{red!80!black}{\textbullet}\;\textcolor{orange!90!black}{\textbullet}\;\textcolor{green!70!black}{\textbullet}\quad rahat@nixos:\textasciitilde/Downloads/Os -- #1},
+    boxrule=0.8pt,
+    arc=2.5mm,
+    top=6pt,
+    bottom=6pt,
+    left=8pt,
+    right=8pt
+}
+
+\begin{document}
+
+\pagenumbering{arabic}
+
+\subsection{First Fit Memory Allocation}
+First Fit searches memory sequentially from the first block (index $0$) to the last block ($n-1$) and allocates the process into the \textbf{first block} whose capacity is greater than or equal to the requested size. Once allocated, the block size is decreased by the requested amount.
+
+\begin{codebox}{FA\_first\_fit.cpp}
+\lstinputlisting[style=cppstyle]{FA_first_fit.cpp}
+\end{codebox}
+
+\vspace{0.8em}
+\begin{termbox}{./FA\_first\_fit}
+\lstinputlisting[style=termstyle]{terminal_outputs/term_FA_first_fit.txt}
+\end{termbox}
+
+\newpage
+
+\subsection{Best Fit Memory Allocation}
+Best Fit examines all available memory blocks and allocates the process into the \textbf{smallest sufficient block} ($\ge \text{size}$). This strategy minimizes leftover space inside the allocated block, reducing immediate internal fragmentation.
+
+\begin{codebox}{FA\_best\_fit.cpp}
+\lstinputlisting[style=cppstyle]{FA_best_fit.cpp}
+\end{codebox}
+
+\vspace{0.8em}
+\begin{termbox}{./FA\_best\_fit}
+\lstinputlisting[style=termstyle]{terminal_outputs/term_FA_best_fit.txt}
+\end{termbox}
+
+\newpage
+
+\subsection{Worst Fit Memory Allocation}
+Worst Fit examines all memory blocks and allocates into the \textbf{largest available block}. The rationale is that the remaining leftover chunk will be large enough to remain useful for subsequent allocations.
+
+\begin{codebox}{FA\_worst\_fit.cpp}
+\lstinputlisting[style=cppstyle]{FA_worst_fit.cpp}
+\end{codebox}
+
+\vspace{0.8em}
+\begin{termbox}{./FA\_worst\_fit}
+\lstinputlisting[style=termstyle]{terminal_outputs/term_FA_worst_fit.txt}
+\end{termbox}
+
+\newpage
+
+\subsection{Next Fit Memory Allocation}
+Next Fit is a modification of First Fit that starts scanning from the \textbf{last allocated position} instead of restarting from the beginning. It cycles through the memory array using modular index progression: \texttt{i = (lastIndex + count) \% n}.
+
+\begin{codebox}{FA\_next\_fit.cpp}
+\lstinputlisting[style=cppstyle]{FA_next_fit.cpp}
+\end{codebox}
+
+\vspace{0.8em}
+\begin{termbox}{./FA\_next\_fit}
+\lstinputlisting[style=termstyle]{terminal_outputs/term_FA_next_fit.txt}
+\end{termbox}
+
+\newpage
+
+\section{Process Scheduling Algorithms}
+
+\subsection{First-Come, First-Served (FCFS / FIFO) Scheduling}
+FIFO schedules processes strictly in the order of their arrival times. Processes are sorted by arrival time, and execution proceeds non-preemptively. Turnaround time ($\text{TAT} = \text{CT} - \text{AT}$) and waiting time ($\text{WT} = \text{TAT} - \text{BT}$) are calculated and averaged.
+
+\begin{codebox}{PS\_FIFO.cpp}
+\lstinputlisting[style=cppstyle]{PS_FIFO.cpp}
+\end{codebox}
+
+\vspace{0.8em}
+\begin{termbox}{./PS\_FIFO}
+\lstinputlisting[style=termstyle]{terminal_outputs/term_PS_FIFO.txt}
+\end{termbox}
+
+\newpage
+
+\subsection{Shortest Job First (SJF) Scheduling (Non-Preemptive)}
+Shortest Job First schedules the arrived process with the smallest CPU burst time. If burst times tie, the process with the earlier arrival time is scheduled first. Once scheduled, the CPU runs the process to completion.
+
+\begin{codebox}{PS\_Shortest\_Job\_first.cpp}
+\lstinputlisting[style=cppstyle]{PS_Shortest_Job_first.cpp}
+\end{codebox}
+
+\vspace{0.8em}
+\begin{termbox}{./PS\_Shortest\_Job\_first}
+\lstinputlisting[style=termstyle]{terminal_outputs/term_PS_Shortest_Job_first.txt}
+\end{termbox}
+
+\newpage
+
+\subsection{Round Robin (RR) Scheduling}
+Round Robin allocates CPU time slices of a fixed Time Quantum ($TQ$) in circular order. Arrived processes enter a FIFO queue. If a process does not finish within $TQ$, it is preempted, returned to the end of the queue, and scheduled again in subsequent rounds.
+
+\begin{codebox}{PS\_Roundrobin.cpp}
+\lstinputlisting[style=cppstyle]{PS_Roundrobin.cpp}
+\end{codebox}
+
+\vspace{0.8em}
+\begin{termbox}{./PS\_Roundrobin}
+\lstinputlisting[style=termstyle]{terminal_outputs/term_PS_Roundrobin.txt}
+\end{termbox}
+
+\newpage
+
+\subsection{Shortest Remaining Time First (SRTF) Scheduling}
+Shortest Remaining Time First is the preemptive counterpart of SJF. At each scheduling step, the process with the lowest remaining execution time among arrived processes is selected to execute for up to the time quantum before re-evaluating the shortest remaining job.
+
+\begin{codebox}{PS\_Shortest\_remaining.cpp}
+\lstinputlisting[style=cppstyle]{PS_Shortest_remaining.cpp}
+\end{codebox}
+
+\vspace{0.8em}
+\begin{termbox}{./PS\_Shortest\_remaining}
+\lstinputlisting[style=termstyle]{terminal_outputs/term_PS_Shortest_remaining.txt}
+\end{termbox}
+
+\end{document}

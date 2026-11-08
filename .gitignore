@@ -1,0 +1,14 @@
+# Compiled binaries
+FA_best_fit
+FA_first_fit
+FA_next_fit
+FA_worst_fit
+PS_FIFO
+PS_Shortest_Job_first
+PS_Roundrobin
+PS_Shortest_remaining
+
+# Temporary test outputs
+*_out.txt
+test_term*.tex
+

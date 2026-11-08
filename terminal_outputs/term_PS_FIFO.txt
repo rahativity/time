@@ -1,0 +1,21 @@
+rahat@nixos:~/Downloads/Os$ ./PS_FIFO
+Enter the number of processes: 4
+Enter arrival time of process 1: 0
+Enter execution time of process 1: 5
+Enter arrival time of process 2: 1
+Enter execution time of process 2: 3
+Enter arrival time of process 3: 2
+Enter execution time of process 3: 8
+Enter arrival time of process 4: 3
+Enter execution time of process 4: 6
+
+Process Arrival Execution       Completion      TAT     WT
+P1      0       5               5               5       0
+P2      1       3               8               7       4
+P3      2       8               16              14      6
+P4      3       6               22              19      13
+
+Average Turnaround Time = 11.25
+Average Waiting Time    = 5.75
+rahat@nixos:~/Downloads/Os$ 
+
