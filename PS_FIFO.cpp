@@ -1,98 +1,67 @@
+#include <algorithm>
 #include <iomanip>
 #include <iostream>
 #include <vector>
 
 using namespace std;
 
-#define ll long long
-#define vi vector<int>
-#define vll vector<long long>
-#define pb push_back
-#define all(x) (x).begin(), (x).end()
+struct Process {
+    int id;
+    int arrival;
+    int execution;
+    int completion;
+    int tat;
+    int wt;
+};
 
 int main() {
     int n;
     cout << "Enter the number of processes: ";
     cin >> n;
 
-    vi process(n), arrival(n), execution(n), completion(n);
-    vi turnaround(n), waiting(n);
-
-    int i, j, pos, temp;
-    float averageTAT = 0, averageWT = 0;
-
-    for (i = 0; i < n; i++) {
-        process[i] = i + 1;
-
-        cout << "Enter arrival time of process " << process[i] << ": ";
-        cin >> arrival[i];
-
-        cout << "Enter execution time of process " << process[i] << ": ";
-        cin >> execution[i];
-
-        completion[i] = -1;
+    vector<Process> p(n);
+    for (int i = 0; i < n; i++) {
+        p[i].id = i + 1;
+        cout << "Enter arrival time of process " << p[i].id << ": ";
+        cin >> p[i].arrival;
+        cout << "Enter execution time of process " << p[i].id << ": ";
+        cin >> p[i].execution;
     }
 
-    for (i = 0; i < n; i++) {
-        pos = i;
+    // Sort processes by arrival time (FCFS order)
+    stable_sort(p.begin(), p.end(), [](const Process &a, const Process &b) {
+        return a.arrival < b.arrival;
+    });
 
-        for (j = i + 1; j < n; j++) {
-            if (arrival[pos] > arrival[j]) {
-                pos = j;
-            }
+    int current_time = 0;
+    float totalTAT = 0, totalWT = 0;
+
+    for (int i = 0; i < n; i++) {
+        // If CPU is idle, advance time to the arrival of this process
+        if (current_time < p[i].arrival) {
+            current_time = p[i].arrival;
         }
+        current_time += p[i].execution;
+        p[i].completion = current_time;
+        p[i].tat = p[i].completion - p[i].arrival;
+        p[i].wt = p[i].tat - p[i].execution;
 
-        temp = arrival[i];
-        arrival[i] = arrival[pos];
-        arrival[pos] = temp;
-
-        temp = execution[i];
-        execution[i] = execution[pos];
-        execution[pos] = temp;
-
-        temp = process[i];
-        process[i] = process[pos];
-        process[pos] = temp;
+        totalTAT += p[i].tat;
+        totalWT += p[i].wt;
     }
-
-    for (i = 0; i < n; i++) {
-        if (i == 0) {
-            completion[i] = arrival[i] + execution[i];
-        }
-        else {
-            if (completion[i - 1] > arrival[i]) {
-                completion[i] = completion[i - 1] + execution[i];
-            }
-            else {
-                completion[i] = arrival[i] + execution[i];
-            }
-        }
-    }
-
-    for (i = 0; i < n; i++) {
-        turnaround[i] = completion[i] - arrival[i];
-        waiting[i] = turnaround[i] - execution[i];
-
-        averageTAT = averageTAT + turnaround[i];
-        averageWT = averageWT + waiting[i];
-    }
-
-    averageTAT = averageTAT / n;
-    averageWT = averageWT / n;
 
     cout << "\nProcess\tArrival\tExecution\tCompletion\tTAT\tWT\n";
-
-    for (i = 0; i < n; i++) {
-        cout << "P" << process[i] << "\t"
-             << arrival[i] << "\t"
-             << execution[i] << "\t\t"
-             << completion[i] << "\t\t"
-             << turnaround[i] << "\t"
-             << waiting[i] << "\n";
+    for (int i = 0; i < n; i++) {
+        cout << "P" << p[i].id << "\t"
+             << p[i].arrival << "\t"
+             << p[i].execution << "\t\t"
+             << p[i].completion << "\t\t"
+             << p[i].tat << "\t"
+             << p[i].wt << "\n";
     }
 
-    cout << "\nAverage Turnaround Time = " << fixed << setprecision(2) << averageTAT;
-    cout << "\nAverage Waiting Time    = " << fixed << setprecision(2) << averageWT << "\n";
+    cout << "\nAverage Turnaround Time = " << fixed << setprecision(2) << (totalTAT / n);
+    cout << "\nAverage Waiting Time    = " << fixed << setprecision(2) << (totalWT / n) << "\n";
 
     return 0;
 }

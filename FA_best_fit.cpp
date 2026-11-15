@@ -3,30 +3,28 @@
 
 using namespace std;
 
-#define ll long long
-#define vi vector<int>
-#define vll vector<long long>
-#define pb push_back
-#define all(x) (x).begin(), (x).end()
-
 int main() {
     int n;
     cout << "Enter number of memory blocks: ";
     cin >> n;
 
-    vi memory(n);
+    vector<int> memory(n);
     for (int i = 0; i < n; i++) {
         cout << "Enter size of block " << (i + 1) << ": ";
         cin >> memory[i];
     }
 
-    while (1) {
-        int size, bestIndex = -1;
+    while (true) {
+        int size;
         cout << "\nEnter size needed (0 to exit): ";
         cin >> size;
 
-        if (size == 0) break;
+        if (size == 0) {
+            break;
+        }
 
+        // Find the smallest block that is large enough
+        int bestIndex = -1;
         for (int i = 0; i < n; i++) {
             if (memory[i] >= size) {
                 if (bestIndex == -1 || memory[i] < memory[bestIndex]) {

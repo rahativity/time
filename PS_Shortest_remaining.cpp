@@ -1,32 +1,33 @@
+#include <algorithm>
 #include <iomanip>
 #include <iostream>
 #include <vector>
 
 using namespace std;
 
-#define ll long long
-#define vi vector<int>
-#define vll vector<long long>
-#define pb push_back
-#define all(x) (x).begin(), (x).end()
+struct Process {
+    int id;
+    int arrival;
+    int burst;
+    int remaining;
+    int completion = 0;
+    int tat = 0;
+    int wt = 0;
+};
 
 int main() {
-    int n, i, tq;
+    int n, tq;
     cout << "Enter the number of processes: ";
     cin >> n;
 
-    vi process(n), arrival(n), burst(n), remaining(n), completion(n);
-    vi waiting(n), turnaround(n);
-
-    for (i = 0; i < n; i++) {
-        process[i] = i + 1;
-        cout << "Enter arrival time of process " << process[i] << ": ";
-        cin >> arrival[i];
-        cout << "Enter burst time of process " << process[i] << ": ";
-        cin >> burst[i];
-
-        remaining[i] = burst[i];
-        completion[i] = 0;
+    vector<Process> p(n);
+    for (int i = 0; i < n; i++) {
+        p[i].id = i + 1;
+        cout << "Enter arrival time of process " << p[i].id << ": ";
+        cin >> p[i].arrival;
+        cout << "Enter burst time of process " << p[i].id << ": ";
+        cin >> p[i].burst;
+        p[i].remaining = p[i].burst;
     }
 
     cout << "Enter Time Quantum: ";
@@ -36,51 +37,56 @@ int main() {
 
     while (completed < n) {
         int min_index = -1;
-        int min_remaining = 9999;
 
-        for (i = 0; i < n; i++) {
-            if (arrival[i] <= time && remaining[i] > 0 && remaining[i] < min_remaining) {
-                min_remaining = remaining[i];
-                min_index = i;
+        // Find process with shortest remaining time among arrived processes
+        for (int i = 0; i < n; i++) {
+            if (p[i].arrival <= time && p[i].remaining > 0) {
+                if (min_index == -1 || p[i].remaining < p[min_index].remaining) {
+                    min_index = i;
+                }
             }
         }
 
+        // If no process has arrived yet, jump to the next arrival time
         if (min_index == -1) {
-            int next_arrival = 9999;
-            for (i = 0; i < n; i++) {
-                if (arrival[i] > time && arrival[i] < next_arrival)
-                    next_arrival = arrival[i];
+            int next_arrival = -1;
+            for (int i = 0; i < n; i++) {
+                if (p[i].arrival > time) {
+                    if (next_arrival == -1 || p[i].arrival < next_arrival) {
+                        next_arrival = p[i].arrival;
+                    }
+                }
             }
             time = next_arrival;
             continue;
         }
 
-        int exec_time = (remaining[min_index] > tq) ? tq : remaining[min_index];
-        remaining[min_index] -= exec_time;
+        // Execute process for up to time quantum
+        int exec_time = min(p[min_index].remaining, tq);
+        p[min_index].remaining -= exec_time;
         time += exec_time;
 
-        if (remaining[min_index] == 0) {
-            completion[min_index] = time;
+        if (p[min_index].remaining == 0) {
+            p[min_index].completion = time;
             completed++;
         }
     }
 
     float total_wt = 0, total_tat = 0;
-
     cout << "\nProcess\tArrival\tBurst\tCompletion\tTurnaround\tWaiting\n";
-    for (i = 0; i < n; i++) {
-        turnaround[i] = completion[i] - arrival[i];
-        waiting[i] = turnaround[i] - burst[i];
+    for (int i = 0; i < n; i++) {
+        p[i].tat = p[i].completion - p[i].arrival;
+        p[i].wt = p[i].tat - p[i].burst;
 
-        total_wt += waiting[i];
-        total_tat += turnaround[i];
+        total_wt += p[i].wt;
+        total_tat += p[i].tat;
 
-        cout << process[i] << "\t"
-             << arrival[i] << "\t"
-             << burst[i] << "\t"
-             << completion[i] << "\t\t"
-             << turnaround[i] << "\t\t"
-             << waiting[i] << "\n";
+        cout << p[i].id << "\t"
+             << p[i].arrival << "\t"
+             << p[i].burst << "\t"
+             << p[i].completion << "\t\t"
+             << p[i].tat << "\t\t"
+             << p[i].wt << "\n";
     }
 
     cout << "\nAverage Waiting Time: " << fixed << setprecision(2) << (total_wt / n);
