@@ -2,7 +2,8 @@ CXX      = g++
 CXXFLAGS = -std=c++17 -Wall -Wextra -pedantic -O2
 TARGETS  = FA_best_fit FA_first_fit FA_next_fit FA_worst_fit \
            PS_FIFO PS_Shortest_Job_first PS_Roundrobin \
-           PS_Shortest_remaining
+           PS_Shortest_remaining \
+           PR_FIFO PR_least_recntly_used PR_Optimal PR_Second_Chance
 
 all: $(TARGETS)
 

@@ -14,17 +14,17 @@ int main() {
         cin >> memory[i];
     }
 
-    int lastIndex = 0;
-
+    
     while (true) {
         int size;
         cout << "\nEnter size needed (0 to exit): ";
         cin >> size;
-
+        
         if (size == 0) {
             break;
         }
-
+        
+        int lastIndex = 0;
         bool allocated = false;
         // Start scanning from the last allocated block
         for (int count = 0; count < n; count++) {
