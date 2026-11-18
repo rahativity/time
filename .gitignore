@@ -7,6 +7,10 @@ PS_FIFO
 PS_Shortest_Job_first
 PS_Roundrobin
 PS_Shortest_remaining
+PR_FIFO
+PR_least_recntly_used
+PR_Optimal
+PR_Second_Chance
 
 # Temporary test outputs
 *_out.txt
